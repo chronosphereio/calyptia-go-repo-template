@@ -30,10 +30,12 @@ Please enter a concise and clear description on what would you like to implement
 
 - [ ] The proposal is clear on what the deployment/configuration strategy is.
 
+- [ ] The proposal is clean on how testing will validate the feature implementation.
+
 ### Reviewers
 
-- John doe (+1)
-- Phil Whelan (-1)
+- [ ] Reviewed by a team member of the @calyptia/backend team
+- [ ] Reviewed by a product owner.
 
 ### Disclaimers
 

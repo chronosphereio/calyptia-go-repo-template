@@ -15,9 +15,11 @@
 
 - [ ] My PR has a related issue/bug number.
 - [ ] My PR provides tests
-  - [ ] Integration tests
-  - [ ] Unit tests
-  - [ ] End-to-end tests
+  - [ ] Integration tests are added/passes
+  - [ ] Unit tests are added/passes
+  - [ ] End-to-end tests added/passes
+  - [ ] Static code check added/passes
+  - [ ] Linting on documentation added/passes
   - [ ] Doesn't affect code coverage stats
 - [ ] My PR requires updating dependencies
 - [ ] My PR has the documentation changes required.
@@ -26,9 +28,9 @@
 
 - [ ] The proposal fixes a bug/issue or implements a new feature that is well described.
 - [ ] The proposal has sufficient test cases that covers the changes.
-  - [ ] If changes an API, it doesn't break back-compatibility.
-  - [ ] If integration is required, the proposal has integration tests.
-- [ ] The proposal doesn't break coverage stats
+  - [ ] If changes an API, it does not break backwards compatibility (-1 major version).
+- [ ] If integration is required, the proposal has integration tests.
+- [ ] The proposal does not break coverage stats
 - [ ] The proposal has the required documentation changes.
 
 ## Backport
