@@ -30,6 +30,14 @@ jobs:
           go test -race -covermode=atomic -coverprofile=coverage.out ./...
           go tool cover -html=coverage.out -o coverage.html
 
+      - name: Upload coverage artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage reports
+          path: |
+            coverage.out
+            coverage.html
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2.1.0
         with:
