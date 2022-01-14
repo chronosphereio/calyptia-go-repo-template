@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run markdownlint
-        uses: actionshub/markdownlint@main
+        uses: actionshub/markdownlint@2.0.2
   actions:
     runs-on: ubuntu-latest
     name: PR - Actionlint
