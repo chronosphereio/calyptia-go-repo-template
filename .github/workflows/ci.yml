@@ -9,6 +9,11 @@ on:
   workflow_dispatch:
 
 jobs:
+  lint-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run markdownlint
+        uses: actionshub/markdownlint@main
   ci:
     runs-on: ubuntu-latest
     steps:

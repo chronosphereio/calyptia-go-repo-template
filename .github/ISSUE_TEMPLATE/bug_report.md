@@ -6,37 +6,35 @@ labels: 'status: waiting-for-triage'
 assignees: ''
 ---
 
-## Bug Report
+# Bug Report
 
-### Describe the bug
+## Describe the bug
 
 Please enter a concise and clear description on how the error ocurred.
 
-### Which versions are affected 
+## Which versions are affected
 
 Please include component versions and any versioning information that is relevant
-to reproduce. 
+to reproduce.
 
-### Reproducer steps
+## Reproducer steps
 
-Logical enumerated sequence on how to reproduce the issue. I.e:
+Logical enumerated sequence on how to reproduce the issue.
 
-1. ...
-2. ..
-
-### Example code or configuration:
+## Example code or configuration
 
 ```
 Configuration or code that reproduces the issue
 ```
 
-### Expected behavior
+## Expected behavior
 
 Please explain what should happen
 
-### Current behavior:
+## Current behavior
 
 Please explain the current behavior
 
 *Disclaimer: Please do not create a Pull Request without creating an issue first.*
-Any change needs to be discussed before proceeding. Failure to do so may result in the rejection of the pull request.
+Any change needs to be discussed before proceeding.
+Failure to do so may result in the rejection of the pull request.
