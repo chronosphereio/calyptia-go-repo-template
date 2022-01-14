@@ -11,6 +11,7 @@ on:
 
 jobs:
   analyze:
+    if: ${{!github.event.repository.private}}
     name: Analyze code
     runs-on: ubuntu-latest
 
