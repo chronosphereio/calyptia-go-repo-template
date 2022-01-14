@@ -5,10 +5,12 @@ on:
 jobs:
   docs:
     runs-on: ubuntu-latest
+    name: PR - Markdownlint
     steps:
       - name: Run markdownlint
         uses: actionshub/markdownlint@2.0.2
   actions:
+
     runs-on: ubuntu-latest
     name: PR - Actionlint
     steps:
