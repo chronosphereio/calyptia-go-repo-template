@@ -20,7 +20,7 @@
   - [ ] End-to-end tests added/passes
   - [ ] Static code check added/passes
   - [ ] Linting on documentation added/passes
-  - [ ] Doesn't affect code coverage stats
+  - [ ] Does not affect code coverage stats
 - [ ] My PR requires updating dependencies
 - [ ] My PR has the documentation changes required.
 
