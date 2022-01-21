@@ -5,47 +5,47 @@
 
 This is a GitHub repository template for Golang projects.
 
-1. CI
+1.CI
 
-   - golangci-lint
+- golangci-lint
 
-   - codecov
+- codecov
 
-   - codeQL
+- codeQL
 
-2. Release
+2.Release
 
-   - goreleaser
+- goreleaser
 
-3. Dependabot
+3.Dependabot
 
-   - gomod
+- gomod
 
-   - github actions
+- github actions
 
 It also contains templates for:
 
-1. Issues
+1.Issues
 
-2. Pull requests
+2.Pull requests
 
-3. Feature requests
+3.Feature requests
 
 ## Usage
 
-1. Use the infra repository [Calyptia Infra](https://github.com/calyptia/infra/blob/master/terraform/github.tf#L134),
+1.Use the infra repository [Calyptia Infra](https://github.com/calyptia/infra/blob/master/terraform/github.tf#L134),
 add your new repository with the template set to use `calyptia/go-repo-template`.
 
-2. Sign up on [Codecov](https://codecov.io/) and configure [Codecov GitHub Application](https://github.com/apps/codecov)
+2.Sign up on [Codecov](https://codecov.io/) and configure [Codecov GitHub Application](https://github.com/apps/codecov)
 for all repositories.
 
-3. Use the infra repository [Calyptia Infra](https://github.com/calyptia/infra/blob/master/terraform/github.tf#L134),
+3.Use the infra repository [Calyptia Infra](https://github.com/calyptia/infra/blob/master/terraform/github.tf#L134),
 add your new repository with the template set to use `calyptia/go-repo-template`.
 
-4. Replace all occurrences of `calyptia/go-repo-template` to `calyptia/repo_name`
+4.Replace all occurrences of `calyptia/go-repo-template` to `calyptia/repo_name`
 on all files.
 
-5. Update the following files:
+5.Update the following files:
 
    -[README.md](README.md)
 
