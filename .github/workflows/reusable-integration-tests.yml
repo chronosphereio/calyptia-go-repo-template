@@ -1,0 +1,104 @@
+---
+name: Reusable workflow to run integration tests with specific images
+on:
+  workflow_call:
+    inputs:
+      cloud_image_registry:
+        description: The cloud image registry to use.
+        type: string
+        required: false
+        default: ghcr.io
+      cloud_image_name:
+        description: The cloud image name to use.
+        type: string
+        required: false
+        default: calyptia/cloud/main
+      cloud_image_tag:
+        description: The image tag to use.
+        type: string
+        required: false
+        default: latest
+      target_repository:
+        description: Target repository where to find tests to run
+        type: string
+        required: true
+        default: calyptia/api
+      target_repository_ref:
+        description: Target repository ref where to find tests to run
+        type: string
+        required: true
+        default: main
+      go_version:
+        description: Golang version to use for running tests
+        required: false
+        type: string
+        default: "1.17"
+    secrets:
+      fluentbit_config_validator_api_key:
+        description: Fluentbit config validator API key
+        required: false
+      fluentd_config_validator_api_key:
+        description: Fluentd config validator API Key
+        required: false
+      smtp_username:
+        description: SMTP username to test email notifications
+        required: false
+      smtp_password:
+        description: SMTP password to test email notifications
+        required: false
+      image_registry_username:
+        description: Password (if github use a PAT token) to use for authentication on private registry
+        required: false
+      image_registry_password:
+        description: Password (if github use a PAT token) to use for authentication on private registry
+        required: false
+jobs:
+  call-run-integration-test-images-exist:
+    name: Test image exists
+    runs-on: ubuntu-latest
+    env:
+      IMAGE: ${{ inputs.cloud_image_registry }}/${{ inputs.cloud_image_name }}:${{ inputs.cloud_image_tag }}
+    steps:
+      - name: Log in to the Container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ inputs.cloud_image_registry }}
+          username: ${{ secrets.image_registry_username }}
+          password: ${{ secrets.image_registry_password }}
+      - run: docker pull $IMAGE
+
+  call-run-integration-tests:
+    name: run integration tests
+    needs: call-run-integration-test-images-exist
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: ${{ inputs.target_repository }}
+          ref: ${{ inputs.target_repository_ref }}
+          token: ${{ secrets.image_registry_password }}
+          fetch-depth: 0
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ inputs.cloud_image_registry }}
+          username: ${{ secrets.image_registry_username }}
+          password: ${{ secrets.image_registry_password }}
+
+      - uses: actions/setup-go@v2
+        with:
+          go-version: ${{ inputs.go_version }}
+
+      # TODO: use a build tag for running integration only.
+      - name: Go tests
+        run: |
+          go test -v ./...
+        shell: bash
+        env:
+          TEST_CLOUD_IMAGE: ${{ inputs.cloud_image_registry }}/${{ inputs.cloud_image_name }}
+          TEST_CLOUD_IMAGE_TAG: ${{ inputs.cloud_image_tag }}
+          TEST_FLUENTBIT_CONFIG_VALIDATOR_API_KEY: ${{ secrets.fluentbit_config_validator_api_key }}
+          TEST_FLUENTD_CONFIG_VALIDATOR_API_KEY: ${{ secrets.fluentd_config_validator_api_key }}
+          TEST_SMTP_USERNAME: ${{ secrets.smtp_username }}
+          TEST_SMTP_PASSWORD: ${{ secrets.smtp_password }}
