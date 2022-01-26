@@ -57,7 +57,7 @@ jobs:
       - name: Log in to the Container registry
         uses: docker/login-action@v1
         with:
-          registry: ${{ inputs.image_registry }}
+          registry: ${{ iinputs.cloud_image_registry }}
           username: ${{ secrets.image_registry_username }}
           password: ${{ secrets.image_registry_password }}
       - run: docker pull $IMAGE
