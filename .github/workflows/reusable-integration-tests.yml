@@ -23,6 +23,11 @@ on:
         type: string
         required: true
         default: calyptia/api
+      target_repository_branch:
+        description: Target repository branch where to find tests to run
+        type: string
+        required: true
+        default: main
       go_version:
         description: Golang version to use for running tests
         required: false
