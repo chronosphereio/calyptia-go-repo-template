@@ -34,24 +34,24 @@ on:
         type: string
         default: "1.17"
     secrets:
-        fluentbit_config_validator_api_key:
-          description: Fluentbit config validator API key
-          required: false
-        fluentd_config_validator_api_key:
-          description: Fluentd config validator API Key
-          required: false
-        smtp_username:
-          description: SMTP username to test email notifications
-          required: false
-        smtp_password:
-          description: SMTP password to test email notifications
-          required: false
-        image_registry_username:
-          description: Password (if github use a PAT token) to use for authentication on private registry
-          required: false
-        image_registry_password:
-          description: Password (if github use a PAT token) to use for authentication on private registry
-          required: false
+      fluentbit_config_validator_api_key:
+        description: Fluentbit config validator API key
+        required: false
+      fluentd_config_validator_api_key:
+        description: Fluentd config validator API Key
+        required: false
+      smtp_username:
+        description: SMTP username to test email notifications
+        required: false
+      smtp_password:
+        description: SMTP password to test email notifications
+        required: false
+      image_registry_username:
+        description: Password (if github use a PAT token) to use for authentication on private registry
+        required: false
+      image_registry_password:
+        description: Password (if github use a PAT token) to use for authentication on private registry
+        required: false
 jobs:
   call-run-integration-test-images-exist:
     name: Test image exists
