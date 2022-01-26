@@ -70,6 +70,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           repository: ${{ inputs.target_repository }}
+          token: ${{ secrets.image_registry_password }}
           depth: 0
 
       - name: Log in to the Container registry
