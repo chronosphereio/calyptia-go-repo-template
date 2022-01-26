@@ -6,27 +6,27 @@ on:
       image_registry:
         description: The image registry to use.
         type: string
-        required: true
+        required: false
         default: ghcr.io
       image_name:
         description: The image name to use.
         type: string
-        required: true
+        required: false
         default: calyptia/cloud/main
       image_tag:
         description: The image tag to use.
         type: string
-        required: true
+        required: false
         default: latest
       dockerfile:
         description: Dockerfile to use when building
         type: string
-        required: true
+        required: false
         default: ./Dockerfile
       platform:
         description: Platform to build the image
         type: string
-        required: true
+        required: false
         default: linux/amd64
     secrets:
       image_registry_username:
