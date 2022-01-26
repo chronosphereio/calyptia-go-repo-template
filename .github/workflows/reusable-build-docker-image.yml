@@ -6,17 +6,17 @@ on:
       image_registry:
         description: The image registry to use.
         type: string
-        required: false
+        required: true
         default: ghcr.io
       image_name:
         description: The image name to use.
         type: string
-        required: false
+        required: true
         default: calyptia/cloud/main
       image_tag:
         description: The image tag to use.
         type: string
-        required: false
+        required: true
         default: latest
       dockerfile:
         description: Dockerfile to use when building
@@ -30,7 +30,7 @@ on:
         default: linux/amd64
     secrets:
       image_registry_username:
-        description: Username (if github use github.action) to use for authentication on private registry
+        description: Username (if github use github.actor) to use for authentication on private registry
         required: true
       image_registry_password:
         description: Password (if github use a PAT token) to use for authentication on private registry
