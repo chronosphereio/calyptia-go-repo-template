@@ -75,6 +75,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           repository: ${{ inputs.target_repository }}
+          ref: ${{ inputs.target_repository_branch }}
           token: ${{ secrets.image_registry_password }}
           fetch-depth: 0
 
