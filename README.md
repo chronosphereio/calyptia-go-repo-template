@@ -35,7 +35,8 @@ It also contains templates for:
 
 ## Usage
 
-1.Use the infra repository to add your new repository with the template set to use `calyptia/go-repo-template`.
+1.Use the infra repository to add your new repository with the template set
+to use `calyptia/go-repo-template`.
 
 2.Sign up on [Codecov](https://codecov.io/) and configure [Codecov GitHub Application](https://github.com/apps/codecov)
 for all repositories.
