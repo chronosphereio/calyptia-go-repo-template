@@ -1,7 +1,7 @@
 # Go Repository Template
 
 [![CI](https://github.com/calyptia/go-repo-template/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/calyptia/go-repo-template/actions/workflows/ci.yml)
-[![Codecov](https://codecov.io/gh/calyptia/go-repo-template/branch/main/graph/badge.svg)](https://codecov.io/gh/calyptia/go-repo-template)
+[![codecov](https://codecov.io/gh/calyptia/go-repo-template/branch/main/graph/badge.svg?token=2IUJM8HDTP)](https://codecov.io/gh/calyptia/go-repo-template)
 
 This is a GitHub repository template for Golang projects.
 
