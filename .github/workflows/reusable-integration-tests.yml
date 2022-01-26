@@ -71,12 +71,12 @@ jobs:
         with:
           repository: ${{ inputs.target_repository }}
           token: ${{ secrets.image_registry_password }}
-          depth: 0
+          fetch-depth: 0
 
       - name: Log in to the Container registry
         uses: docker/login-action@v1
         with:
-          registry: ${{ inputs.image_registry }}
+          registry: ${{ inputs.cloud_image_registry }}
           username: ${{ secrets.image_registry_username }}
           password: ${{ secrets.image_registry_password }}
 
