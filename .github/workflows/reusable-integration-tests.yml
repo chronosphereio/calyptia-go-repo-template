@@ -96,7 +96,7 @@ jobs:
           go test -v ./...
         shell: bash
         env:
-          TEST_CLOUD_IMAGE: ${{ inputs.cloud_image_registry}}/${{ inputs.cloud_image_name }}
+          TEST_CLOUD_IMAGE: ${{ inputs.cloud_image_registry }}/${{ inputs.cloud_image_name }}
           TEST_CLOUD_IMAGE_TAG: ${{ inputs.cloud_image_tag }}
           TEST_FLUENTBIT_CONFIG_VALIDATOR_API_KEY: ${{ secrets.fluentbit_config_validator_api_key }}
           TEST_FLUENTD_CONFIG_VALIDATOR_API_KEY: ${{ secrets.fluentd_config_validator_api_key }}
