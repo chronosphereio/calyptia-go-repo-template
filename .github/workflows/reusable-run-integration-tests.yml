@@ -110,7 +110,9 @@ jobs:
           registry: ${{ inputs.cloud_image_registry }}
           username: ${{ secrets.registry_username }}
           password: ${{ secrets.registry_password }}
-      - run: docker pull $IMAGE
+      - name: Docker pull image
+        run: |
+          docker pull $IMAGE
 
   call-run-integration-tests:
     name: run integration tests
