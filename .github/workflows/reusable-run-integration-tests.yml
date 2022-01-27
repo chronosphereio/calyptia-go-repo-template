@@ -145,9 +145,10 @@ jobs:
 
       - name: Go tests
         run: |
-          go test ${{ env.GO_TEST_PARAMS }} -timeout=${{ inputs.go_test_timeout }}m
+          go test ${{ env.GO_TEST_PARAMS }}
+      #timeout=${{ inputs.go_test_timeout }}m
         shell: bash
-        timeout-minutes: 5
+      #  timeout-minutes: 5
         env:
           GO_TEST_PARAMS: ${{ inputs.go_test_params }}
           TEST_CLOUD_IMAGE: ${{ inputs.cloud_image_registry }}/${{ inputs.cloud_image_name }}
