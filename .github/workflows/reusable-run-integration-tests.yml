@@ -12,7 +12,7 @@ on:
         description: The Github environment to run this workflow on.
         type: string
         required: false
-        default: ""
+        default: "integration"
       cloud_image_registry:
         description: The cloud image registry to use.
         type: string
@@ -94,7 +94,8 @@ on:
       registry_password:
         description: Github container registry enforces to use a PAT or a secrets.GITHUB_TOKEN as password (no alternative here).
         required: true
-concurrency: integration
+concurrency: ${{ inputs.concurrency }}
+
 jobs:
   call-run-integration-test-images-exist:
     name: Test image exists
