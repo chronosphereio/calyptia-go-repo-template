@@ -63,6 +63,11 @@ on:
         required: false
         type: string
         default: v1.23.3
+      aggregator_tls:
+        description: Enable TLS at the aggregator tests.
+        required: false
+        type: string
+        default: off
       auth0_client_id:
         description: client used for OIDC authentication.
         required: false
@@ -150,7 +155,7 @@ jobs:
           TEST_FLUENTD_CONFIG_VALIDATOR_API_KEY: ${{ secrets.fluentd_config_validator_api_key }}
           TEST_SMTP_USERNAME: ${{ secrets.smtp_username }}
           TEST_SMTP_PASSWORD: ${{ secrets.smtp_password }}
-          AGGREGATOR_FLUENTBIT_TLS: off
-          AGGREGATOR_FLUENTBIT_TLS_VERIFY: off
+          AGGREGATOR_FLUENTBIT_TLS:  ${{ inputs.aggregator_tls }}
+          AGGREGATOR_FLUENTBIT_TLS_VERIFY: ${{ inputs.aggregator_tls }}
           TEST_AUTH0_CLIENT_ID: ${{ inputs.auth0_client_id }}
           TEST_AUTH0_CLIENT_SECRET: ${{ secrets.auth0_client_secret }}
