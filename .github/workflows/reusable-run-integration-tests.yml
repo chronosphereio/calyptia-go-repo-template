@@ -94,7 +94,7 @@ on:
       registry_password:
         description: Github container registry enforces to use a PAT or a secrets.GITHUB_TOKEN as password (no alternative here).
         required: true
-concurrency: ${{ inputs.concurrency }}
+concurrency: integration
 jobs:
   call-run-integration-test-images-exist:
     name: Test image exists
