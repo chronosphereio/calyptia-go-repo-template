@@ -28,13 +28,13 @@ on:
         type: string
         required: false
         default: latest
-      target_repository:
-        description: Target repository where to find tests to run
+      repository:
+        description: Repository where to find tests to run
         type: string
         required: false
         default: ${{ github.repository }}
-      target_repository_ref:
-        description: Target repository ref where to find tests to run
+      repository_ref:
+        description: Repository reference where to find tests to run
         type: string
         required: false
         default: ${{ github.ref }}
@@ -83,10 +83,10 @@ on:
       auth0_client_secret:
         description: Auth0 client secret
         required: false
-      image_registry_username:
+      registry_username:
         description: Username that can pulls from the registry + token.
         required: true
-      image_registry_password:
+      registry_password:
         description: Github container registry enforces to use a PAT or a secrets.GITHUB_TOKEN as password (no alternative here).
         required: true
 concurrency: ${{ inputs.concurrency }}
@@ -102,8 +102,8 @@ jobs:
         uses: docker/login-action@v1
         with:
           registry: ${{ inputs.cloud_image_registry }}
-          username: ${{ secrets.image_registry_username }}
-          password: ${{ secrets.image_registry_password }}
+          username: ${{ secrets.registry_username }}
+          password: ${{ secrets.registry_password }}
       - run: docker pull $IMAGE
 
   call-run-integration-tests:
@@ -114,17 +114,17 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          repository: ${{ inputs.target_repository }}
-          ref: ${{ inputs.target_repository_ref }}
-          token: ${{ secrets.image_registry_password }}
+          repository: ${{ inputs.repository }}
+          ref: ${{ inputs.repository_ref }}
+          token: ${{ secrets.registry_password }}
           fetch-depth: 1
 
       - name: Log in to the Container registry
         uses: docker/login-action@v1
         with:
           registry: ${{ inputs.cloud_image_registry }}
-          username: ${{ secrets.image_registry_username }}
-          password: ${{ secrets.image_registry_password }}
+          username: ${{ secrets.registry_username }}
+          password: ${{ secrets.registry_password }}
 
       - uses: actions/setup-go@v2
         with:

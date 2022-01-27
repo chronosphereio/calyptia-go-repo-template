@@ -13,7 +13,7 @@ on:
         type: string
         required: false
         default: ""
-      image_registry:
+      registry:
         description: The image registry to use.
         type: string
         required: true
@@ -38,26 +38,26 @@ on:
         required: false
         default: .
       platforms:
-        description: Comma separated lists of platforms to build the image for.
+        description: Lists of platforms (command separated) to build the image for.
         type: string
         required: false
         default: linux/amd64
-      target_repository:
-        description: Target repository where to find tests to run
+      repository:
+        description: Repository to build the image from.
         type: string
-        required: false
+        required: true
         default: ${{ github.repository }}
-      target_repository_ref:
-        description: Target repository ref where to find tests to run
+      repository_ref:
+        description: Repository ref to build the image from.
         type: string
-        required: false
+        required: true
         default: ${{ github.ref }}
     secrets:
-      image_registry_username:
-        description: Username (if github use github.actor) to use for authentication on private registry
+      registry_username:
+        description: Username to authenticate on the container registry.
         required: true
-      image_registry_password:
-        description: Password (if github use a PAT token) to use for authentication on private registry
+      registry_password:
+        description: Password, PAT or GITHUB_TOKEN to authenticate on the container registry.
         required: true
 concurrency: ${{ inputs.concurrency }}
 jobs:
@@ -68,8 +68,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          repository: ${{ inputs.target_repository }}
-          ref: ${{ inputs.target_repository_ref }}
+          token: ${{ secrets.registry_password }}
+          repository: ${{ inputs.repository }}
+          ref: ${{ inputs.repository_ref }}
           fetch-depth: 1
 
       # Used for cross-platform builds.
@@ -82,15 +83,15 @@ jobs:
       - name: Log in to the Container registry
         uses: docker/login-action@v1
         with:
-          registry: ${{ inputs.image_registry }}
-          username: ${{ secrets.image_registry_username }}
-          password: ${{ secrets.image_registry_password }}
+          registry: ${{ inputs.registry }}
+          username: ${{ secrets.registry_username }}
+          password: ${{ secrets.registry_password }}
 
       - name: Extract metadata from Github
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: ${{ inputs.image_registry }}/${{ inputs.image_name }}
+          images: ${{ inputs.registry }}/${{ inputs.image_name }}
 
       - name: Build and push image
         uses: docker/build-push-action@v2
