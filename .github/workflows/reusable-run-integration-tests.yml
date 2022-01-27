@@ -21,13 +21,13 @@ on:
       target_repository:
         description: Target repository where to find tests to run
         type: string
-        required: true
-        default: calyptia/api
+        required: false
+        default: ${{ github.repository }}
       target_repository_ref:
         description: Target repository ref where to find tests to run
         type: string
-        required: true
-        default: main
+        required: false
+        default: ${{ github.ref }}
       go_version:
         description: Golang version to use for running tests
         required: false
@@ -37,12 +37,16 @@ on:
         description: Parameters to pass to go tests
         required: false
         type: string
-        default: "-v ./..."
+        default: "-v -race -tags=integration ./..."
       enable_kind:
         description: Enable a kind cluster.
         required: false
         type: boolean
         default: false
+      auth0_client_id:
+        description: client used for OIDC authentication.
+        required: false
+        type: string
     secrets:
       fluentbit_config_validator_api_key:
         description: Fluentbit config validator API key
@@ -61,6 +65,9 @@ on:
         required: false
       image_registry_password:
         description: Password (if github use a PAT token) to use for authentication on private registry
+        required: false
+      auth0_client_secret:
+        description: Auth0 client secret
         required: false
 jobs:
   call-run-integration-test-images-exist:
@@ -116,3 +123,7 @@ jobs:
           TEST_FLUENTD_CONFIG_VALIDATOR_API_KEY: ${{ secrets.fluentd_config_validator_api_key }}
           TEST_SMTP_USERNAME: ${{ secrets.smtp_username }}
           TEST_SMTP_PASSWORD: ${{ secrets.smtp_password }}
+          AGGREGATOR_FLUENTBIT_TLS: off
+          AGGREGATOR_FLUENTBIT_TLS_VERIFY: off
+          TEST_AUTH0_CLIENT_ID: ${{ inputs.auth0_client_id }}
+          TEST_AUTH0_CLIENT_SECRET: ${{ secrets.auth0_client_secret }}
