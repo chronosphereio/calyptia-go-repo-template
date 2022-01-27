@@ -33,6 +33,16 @@ on:
         required: false
         type: string
         default: "1.17"
+      go_test_params:
+        description: Parameters to pass to go tests
+        required: false
+        type: string
+        default: ""
+      enable_kind:
+        description: Enable a kind cluster.
+        required: false
+        type: boolean
+        default: false
     secrets:
       fluentbit_config_validator_api_key:
         description: Fluentbit config validator API key
@@ -90,12 +100,16 @@ jobs:
         with:
           go-version: ${{ inputs.go_version }}
 
-      # TODO: use a build tag for running integration only.
+      - name: Create k8s Kind Cluster
+        if: ${{ inputs.enable_kind == 'true' }}
+        uses: helm/kind-action@v1.2.0
+
       - name: Go tests
         run: |
-          go test -v ./...
+          go test -v ${{ env.GO_TESTS_PARAMS }} ./...
         shell: bash
         env:
+          GO_TEST_PARAMS: ${{ inputs.go_test_params }}
           TEST_CLOUD_IMAGE: ${{ inputs.cloud_image_registry }}/${{ inputs.cloud_image_name }}
           TEST_CLOUD_IMAGE_TAG: ${{ inputs.cloud_image_tag }}
           TEST_FLUENTBIT_CONFIG_VALIDATOR_API_KEY: ${{ secrets.fluentbit_config_validator_api_key }}
