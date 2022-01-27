@@ -145,7 +145,7 @@ jobs:
 
       - name: Go tests
         run: |
-          go test ${{ env.GO_TEST_PARAMS }} timeout=${{ inputs.go_test_timeout }}m
+          go test ${{ env.GO_TEST_PARAMS }} -timeout=${{ inputs.go_test_timeout }}m
         shell: bash
         timeout-minutes: 5
         env:
