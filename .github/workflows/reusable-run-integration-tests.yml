@@ -137,7 +137,7 @@ jobs:
 
       # TODO: revisit support for other k8s providers that can be used in github actions.
       - name: Setup kind kubernetes provider.
-        if: ${{ inputs.kubernetes_platform == "kind" }}
+        if: ${{ inputs.kubernetes_platform == 'kind' }}
         uses: helm/kind-action@v1.2.0
         with:
           node_image: kindest/node:${{ kubernetes_version }}
