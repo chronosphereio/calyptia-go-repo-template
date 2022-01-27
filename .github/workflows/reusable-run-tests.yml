@@ -101,7 +101,7 @@ jobs:
           go-version: ${{ inputs.go_version }}
 
       - name: Create k8s Kind Cluster
-        if: ${{ inputs.enable_kind == 'true' }}
+        if: ${{ inputs.enable_kind == true }}
         uses: helm/kind-action@v1.2.0
 
       - name: Go tests
