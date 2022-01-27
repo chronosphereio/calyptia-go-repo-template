@@ -141,7 +141,7 @@ jobs:
         if: ${{ inputs.kubernetes_platform == 'kind' }}
         uses: helm/kind-action@v1.2.0
         with:
-          node_image: kindest/node:v${{ inputs.kubernetes_version }}
+          node_image: kindest/node:${{ inputs.kubernetes_version }}
 
       - name: Go tests
         run: |
