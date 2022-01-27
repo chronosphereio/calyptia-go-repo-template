@@ -42,6 +42,16 @@ on:
         type: string
         required: false
         default: linux/amd64
+      target_repository:
+        description: Target repository where to find tests to run
+        type: string
+        required: false
+        default: ${{ github.repository }}
+      target_repository_ref:
+        description: Target repository ref where to find tests to run
+        type: string
+        required: false
+        default: ${{ github.ref }}
     secrets:
       image_registry_username:
         description: Username (if github use github.actor) to use for authentication on private registry
@@ -58,6 +68,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
+          repository: ${{ inputs.target_repository }}
+          ref: ${{ inputs.target_repository_ref }}
           fetch-depth: 1
 
       # Used for cross-platform builds.
