@@ -3,6 +3,16 @@ name: Reusable workflow to build and publish a docker image.
 on:
   workflow_call:
     inputs:
+      environment:
+        description: The Github environment to run this workflow on.
+        type: string
+        required: false
+        default: ""
+      concurrency:
+        description: The github concurrency workflow to run on ()
+        type: string
+        required: false
+        default: ""
       image_registry:
         description: The image registry to use.
         type: string
@@ -12,7 +22,6 @@ on:
         description: The image name to use.
         type: string
         required: true
-        default: calyptia/cloud/main
       image_tag:
         description: The image tag to use.
         type: string
@@ -23,8 +32,13 @@ on:
         type: string
         required: false
         default: ./Dockerfile
-      platform:
-        description: Platform to build the image
+      build_context:
+        description: Build context for image.
+        type: string
+        required: false
+        default: .
+      platforms:
+        description: Comma separated lists of platforms to build the image for.
         type: string
         required: false
         default: linux/amd64
@@ -35,14 +49,20 @@ on:
       image_registry_password:
         description: Password (if github use a PAT token) to use for authentication on private registry
         required: true
+concurrency: ${{ inputs.concurrency }}
 jobs:
   call-build-docker-image:
     name: Build docker image
+    environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
-          fetch-depth: 0
+          fetch-depth: 1
+
+      # Used for cross-platform builds.
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -66,8 +86,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           file: ${{ inputs.dockerfile }}
-          context: .
+          context: ${{ inputs.build_context }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: ${{ inputs.platform }}
+          platforms: ${{ inputs.platforms }}
           push: true

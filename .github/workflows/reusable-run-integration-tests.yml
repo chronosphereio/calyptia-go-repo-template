@@ -3,6 +3,16 @@ name: Reusable workflow to run integration tests with specific images
 on:
   workflow_call:
     inputs:
+      environment:
+        description: The Github environment to run this workflow on.
+        type: string
+        required: false
+        default: ""
+      concurrency:
+        description: The Github environment to run this workflow on.
+        type: string
+        required: false
+        default: ""
       cloud_image_registry:
         description: The cloud image registry to use.
         type: string
@@ -33,16 +43,26 @@ on:
         required: false
         type: string
         default: "1.17"
+      go_test_timeout:
+        description: Go test timeout in minutes.
+        type: number
+        required: false
+        default: 5
       go_test_params:
         description: Parameters to pass to go tests
         required: false
         type: string
         default: "-v -race -tags=integration ./..."
-      enable_kind:
-        description: Enable a kind cluster.
+      kubernetes_platform:
+        description: Kubernetes platform to use (kind, k3s, etc).
         required: false
-        type: boolean
-        default: false
+        type: string
+        default: ""
+      kubernetes_version:
+        description: Kubernetes version to use.
+        required: false
+        type: string
+        default: v1.23.3
       auth0_client_id:
         description: client used for OIDC authentication.
         required: false
@@ -60,18 +80,20 @@ on:
       smtp_password:
         description: SMTP password to test email notifications
         required: false
-      image_registry_username:
-        description: Password (if github use a PAT token) to use for authentication on private registry
-        required: false
-      image_registry_password:
-        description: Password (if github use a PAT token) to use for authentication on private registry
-        required: false
       auth0_client_secret:
         description: Auth0 client secret
         required: false
+      image_registry_username:
+        description: Username that can pulls from the registry + token.
+        required: true
+      image_registry_password:
+        description: Github container registry enforces to use a PAT or a secrets.GITHUB_TOKEN as password (no alternative here).
+        required: true
+concurrency: ${{ inputs.concurrency }}
 jobs:
   call-run-integration-test-images-exist:
     name: Test image exists
+    environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
     env:
       IMAGE: ${{ inputs.cloud_image_registry }}/${{ inputs.cloud_image_name }}:${{ inputs.cloud_image_tag }}
@@ -86,6 +108,7 @@ jobs:
 
   call-run-integration-tests:
     name: run integration tests
+    environment: ${{ inputs.environment }}
     needs: call-run-integration-test-images-exist
     runs-on: ubuntu-latest
     steps:
@@ -94,7 +117,7 @@ jobs:
           repository: ${{ inputs.target_repository }}
           ref: ${{ inputs.target_repository_ref }}
           token: ${{ secrets.image_registry_password }}
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Log in to the Container registry
         uses: docker/login-action@v1
@@ -107,14 +130,18 @@ jobs:
         with:
           go-version: ${{ inputs.go_version }}
 
-      - name: Create k8s Kind Cluster
-        if: ${{ inputs.enable_kind == true }}
+      # TODO: revisit support for other k8s providers that can be used in github actions.
+      - name: Setup kind kubernetes provider.
+        if: ${{ inputs.kubernetes_platform == "kind" }}
         uses: helm/kind-action@v1.2.0
+        with:
+          node_image: kindest/node:${{ kubernetes_version }}
 
       - name: Go tests
         run: |
-          go test ${{ env.GO_TEST_PARAMS }}
+          go test ${{ env.GO_TEST_PARAMS }} -timeout=${{ inputs.go_test_timeout }}m
         shell: bash
+        timeout-minutes: 5
         env:
           GO_TEST_PARAMS: ${{ inputs.go_test_params }}
           TEST_CLOUD_IMAGE: ${{ inputs.cloud_image_registry }}/${{ inputs.cloud_image_name }}
