@@ -1,0 +1,104 @@
+---
+name: Reusable workflow to build and publish a docker image.
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: The Github environment to run this workflow on.
+        type: string
+        required: false
+        default: ""
+      concurrency:
+        description: The Github concurrency group to run this workflow on.
+        type: string
+        required: false
+        default: ci-${{ github.ref }}
+      registry:
+        description: The image registry to use.
+        type: string
+        required: false
+        default: ghcr.io
+      image_name:
+        description: The image name to use.
+        type: string
+        required: true
+      image_tag:
+        description: The image tag to use.
+        type: string
+        required: false
+        default: latest
+      dockerfile:
+        description: Dockerfile to use when building
+        type: string
+        required: false
+        default: ./Dockerfile
+      build_context:
+        description: Build context for image.
+        type: string
+        required: false
+        default: .
+      platforms:
+        description: Lists of platforms (command separated) to build the image for.
+        type: string
+        required: false
+        default: linux/amd64
+      repository:
+        description: Repository to build the image from.
+        type: string
+        required: false
+        default: ${{ github.repository }}
+      repository_ref:
+        description: Repository ref to build the image from.
+        type: string
+        required: false
+        default: ${{ github.ref }}
+    secrets:
+      registry_username:
+        description: Username to authenticate on the container registry.
+        required: true
+      registry_password:
+        description: Password, PAT or GITHUB_TOKEN to authenticate on the container registry.
+        required: true
+concurrency: ${{ inputs.concurrency }}
+jobs:
+  call-build-docker-image:
+    name: Build docker image
+    environment: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.registry_password }}
+          repository: ${{ inputs.repository }}
+          ref: ${{ inputs.repository_ref }}
+          fetch-depth: 1
+
+      # Used for cross-platform builds.
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ inputs.registry }}
+          username: ${{ secrets.registry_username }}
+          password: ${{ secrets.registry_password }}
+
+      - name: Extract metadata from Github
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{ inputs.registry }}/${{ inputs.image_name }}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v2
+        with:
+          file: ${{ inputs.dockerfile }}
+          context: ${{ inputs.build_context }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: ${{ inputs.platforms }}
+          push: true

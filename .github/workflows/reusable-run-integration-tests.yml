@@ -1,0 +1,164 @@
+---
+name: Reusable workflow to run integration tests with specific images
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: The Github environment to run this workflow on.
+        type: string
+        required: false
+        default: ""
+      concurrency:
+        description: The Github concurrency group to run this workflow on.
+        type: string
+        required: false
+        default: ci-${{ github.ref }}
+      cloud_image_registry:
+        description: The cloud image registry to use.
+        type: string
+        required: false
+        default: ghcr.io
+      cloud_image_name:
+        description: The cloud image name to use.
+        type: string
+        required: false
+        default: calyptia/cloud/main
+      cloud_image_tag:
+        description: The image tag to use.
+        type: string
+        required: false
+        default: latest
+      repository:
+        description: Repository where to find tests to run
+        type: string
+        required: false
+        default: ${{ github.repository }}
+      repository_ref:
+        description: Repository reference where to find tests to run
+        type: string
+        required: false
+        default: ${{ github.ref }}
+      go_version:
+        description: Golang version to use for running tests
+        required: false
+        type: string
+        default: "1.17"
+      go_test_timeout:
+        description: Go test timeout in minutes.
+        type: number
+        required: false
+        default: 5
+      go_test_params:
+        description: Parameters to pass to go tests
+        required: false
+        type: string
+        default: "-v -race ./..."
+      kubernetes_platform:
+        description: Kubernetes platform to use (kind, k3s, etc).
+        required: false
+        type: string
+        default: ""
+      kubernetes_version:
+        description: Kubernetes version to use.
+        required: false
+        type: string
+        default: v1.23.3
+      aggregator_tls:
+        description: Enable TLS at the aggregator tests.
+        required: false
+        type: string
+        default: off
+    secrets:
+      fluentbit_config_validator_api_key:
+        description: Fluentbit config validator API key
+        required: false
+      fluentd_config_validator_api_key:
+        description: Fluentd config validator API Key
+        required: false
+      smtp_username:
+        description: SMTP username to test email notifications
+        required: false
+      smtp_password:
+        description: SMTP password to test email notifications
+        required: false
+      auth0_client_id:
+        description: client used for OIDC authentication.
+        required: false
+      auth0_client_secret:
+        description: Auth0 client secret
+        required: false
+      registry_username:
+        description: Username that can pulls from the registry + token.
+        required: true
+      registry_password:
+        description: Github container registry enforces to use a PAT or a secrets.GITHUB_TOKEN as password (no alternative here).
+        required: true
+
+concurrency: ${{ inputs.concurrency }}
+
+jobs:
+  call-run-integration-test-images-exist:
+    name: Test image exists
+    environment: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    env:
+      IMAGE: ${{ inputs.cloud_image_registry }}/${{ inputs.cloud_image_name }}:${{ inputs.cloud_image_tag }}
+    steps:
+      - name: Log in to the Container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ inputs.cloud_image_registry }}
+          username: ${{ secrets.registry_username }}
+          password: ${{ secrets.registry_password }}
+      - name: Docker pull image
+        run: |
+          docker pull $IMAGE
+
+  call-run-integration-tests:
+    name: run integration tests
+    environment: ${{ inputs.environment }}
+    needs: call-run-integration-test-images-exist
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: ${{ inputs.repository }}
+          ref: ${{ inputs.repository_ref }}
+          token: ${{ secrets.registry_password }}
+          fetch-depth: 1
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ inputs.cloud_image_registry }}
+          username: ${{ secrets.registry_username }}
+          password: ${{ secrets.registry_password }}
+
+      - uses: actions/setup-go@v2
+        with:
+          go-version: ${{ inputs.go_version }}
+
+      # TODO: revisit support for other k8s providers that can be used in github actions.
+      - name: Setup kind kubernetes provider.
+        if: ${{ inputs.kubernetes_platform == 'kind' }}
+        uses: helm/kind-action@v1.2.0
+        with:
+          node_image: kindest/node:${{ inputs.kubernetes_version }}
+
+      - name: Go tests
+        run: |
+          go test ${{ env.GO_TEST_PARAMS }} -timeout=${{ inputs.go_test_timeout }}m
+        shell: bash
+        timeout-minutes: 5
+        env:
+          GO_TEST_PARAMS: ${{ inputs.go_test_params }}
+          TEST_CLOUD_IMAGE: ${{ inputs.cloud_image_registry }}/${{ inputs.cloud_image_name }}
+          TEST_CLOUD_IMAGE_TAG: ${{ inputs.cloud_image_tag }}
+          TEST_FLUENTBIT_CONFIG_VALIDATOR_API_KEY: ${{ secrets.fluentbit_config_validator_api_key }}
+          TEST_FLUENTD_CONFIG_VALIDATOR_API_KEY: ${{ secrets.fluentd_config_validator_api_key }}
+          TEST_SMTP_USERNAME: ${{ secrets.smtp_username }}
+          TEST_SMTP_PASSWORD: ${{ secrets.smtp_password }}
+          AGGREGATOR_FLUENTBIT_TLS:  ${{ inputs.aggregator_tls }}
+          AGGREGATOR_FLUENTBIT_TLS_VERIFY: ${{ inputs.aggregator_tls }}
+          TEST_AUTH0_CLIENT_ID: ${{ secrets.auth0_client_id }}
+          TEST_AUTH0_CLIENT_SECRET: ${{ secrets.auth0_client_secret }}
