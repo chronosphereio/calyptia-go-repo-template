@@ -9,10 +9,10 @@ on:
         required: false
         default: ""
       concurrency:
-        description: The github concurrency workflow to run on.
+        description: The Github concurrency group to run this workflow on.
         type: string
         required: false
-        default: "integration"
+        default: ci-${{ github.ref }}
       registry:
         description: The image registry to use.
         type: string
