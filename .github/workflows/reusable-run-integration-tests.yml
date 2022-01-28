@@ -12,7 +12,7 @@ on:
         description: The Github concurrency group to run this workflow on.
         type: string
         required: false
-        default: ${{ inputs.environment != '' && inputs.environment || github.ref }}
+        default: ci-${{ github.ref }}
       cloud_image_registry:
         description: The cloud image registry to use.
         type: string
