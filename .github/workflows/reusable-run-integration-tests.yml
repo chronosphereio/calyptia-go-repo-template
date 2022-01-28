@@ -160,5 +160,5 @@ jobs:
           TEST_SMTP_PASSWORD: ${{ secrets.smtp_password }}
           AGGREGATOR_FLUENTBIT_TLS:  ${{ inputs.aggregator_tls }}
           AGGREGATOR_FLUENTBIT_TLS_VERIFY: ${{ inputs.aggregator_tls }}
-          TEST_AUTH0_CLIENT_ID: ${{ inputs.auth0_client_id }}
+          TEST_AUTH0_CLIENT_ID: ${{ secrets.auth0_client_id }}
           TEST_AUTH0_CLIENT_SECRET: ${{ secrets.auth0_client_secret }}
