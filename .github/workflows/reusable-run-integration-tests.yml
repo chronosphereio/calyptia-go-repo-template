@@ -52,7 +52,7 @@ on:
         description: Parameters to pass to go tests
         required: false
         type: string
-        default: "-v -race -tags=integration ./..."
+        default: "-v -race ./..."
       kubernetes_platform:
         description: Kubernetes platform to use (kind, k3s, etc).
         required: false
