@@ -9,10 +9,10 @@ on:
         required: false
         default: ""
       concurrency:
-        description: The Github environment to run this workflow on.
+        description: The Github concurrency group to run this workflow on.
         type: string
         required: false
-        default: "integration"
+        default: ${{ inputs.environment != '' && inputs.environment || github.ref }}
       cloud_image_registry:
         description: The cloud image registry to use.
         type: string
@@ -68,10 +68,6 @@ on:
         required: false
         type: string
         default: off
-      auth0_client_id:
-        description: client used for OIDC authentication.
-        required: false
-        type: string
     secrets:
       fluentbit_config_validator_api_key:
         description: Fluentbit config validator API key
@@ -85,6 +81,9 @@ on:
       smtp_password:
         description: SMTP password to test email notifications
         required: false
+      auth0_client_id:
+        description: client used for OIDC authentication.
+        required: false
       auth0_client_secret:
         description: Auth0 client secret
         required: false
@@ -94,6 +93,7 @@ on:
       registry_password:
         description: Github container registry enforces to use a PAT or a secrets.GITHUB_TOKEN as password (no alternative here).
         required: true
+
 concurrency: ${{ inputs.concurrency }}
 
 jobs:
