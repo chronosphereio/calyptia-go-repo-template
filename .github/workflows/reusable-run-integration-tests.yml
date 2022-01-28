@@ -74,6 +74,9 @@ on:
         type: string
         default: no
     secrets:
+      codecov_token:
+        description: Codecov service token.
+        required: false
       fluentbit_config_validator_api_key:
         description: Fluentbit config validator API key
         required: false
