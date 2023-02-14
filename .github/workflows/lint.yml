@@ -13,7 +13,7 @@ jobs:
           fetch-depth: 0
 
       - name: Run markdown lint
-        uses: actionshub/markdownlint@v2.1.2
+        uses: actionshub/markdownlint@v3.1.3
 
       - name: Run action lint
         run: |
