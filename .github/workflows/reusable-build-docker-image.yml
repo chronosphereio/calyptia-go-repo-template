@@ -89,7 +89,7 @@ jobs:
 
       - name: Extract metadata from Github
         id: meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: ${{ inputs.registry }}/${{ inputs.image_name }}
 
