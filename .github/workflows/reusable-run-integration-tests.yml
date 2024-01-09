@@ -125,7 +125,7 @@ jobs:
           TOKEN: ${{ secrets.registry_password }}
         run: git config --global url."https://${TOKEN}@github.com".insteadOf "https://github.com"
         
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           repository: ${{ inputs.repository }}
           ref: ${{ inputs.repository_ref }}
