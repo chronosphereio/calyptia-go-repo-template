@@ -105,7 +105,7 @@ jobs:
       IMAGE: ${{ inputs.cloud_image_registry }}/${{ inputs.cloud_image_name }}:${{ inputs.cloud_image_tag }}
     steps:
       - name: Log in to the Container registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ${{ inputs.cloud_image_registry }}
           username: ${{ secrets.registry_username }}
@@ -133,7 +133,7 @@ jobs:
           fetch-depth: 1
 
       - name: Log in to the Container registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ${{ inputs.cloud_image_registry }}
           username: ${{ secrets.registry_username }}
